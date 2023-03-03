@@ -13,3 +13,15 @@
 [submodule "third_party/disk"]
 	path = third_party/disk
 	url = https://github.com/cvlab-epfl/disk.git
+[submodule "third_party/SGMNet"]
+	path = third_party/SGMNet
+	url = https://github.com/vdvchen/SGMNet.git
+[submodule "third_party/QuadTreeAttention"]
+	path = third_party/QuadTreeAttention
+	url = https://github.com/Tangshitao/QuadTreeAttention.git
+[submodule "third_party/DKM"]
+	path = third_party/DKM
+	url = https://github.com/Parskatt/DKM.git
+[submodule "third_party/DenseMatching"]
+	path = third_party/DenseMatching
+	url = https://github.com/PruneTruong/DenseMatching.git

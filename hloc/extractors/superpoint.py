@@ -1,6 +1,7 @@
 import sys
 from pathlib import Path
 import torch
+import torch.nn as nn
 
 from ..utils.base_model import BaseModel
 
@@ -35,8 +36,10 @@ class SuperPoint(BaseModel):
     detection_noise = 2.0
 
     def _init(self, conf):
+        
         if conf['fix_sampling']:
             superpoint.sample_descriptors = sample_descriptors_fix_sampling
+        
         self.net = superpoint.SuperPoint(conf)
 
     def _forward(self, data):

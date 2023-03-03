@@ -29,6 +29,22 @@ confs = {
             'sinkhorn_iterations': 50,
         },
     },
+    'sgmnet_root': {
+        'output': 'matches-sgmnet-root',
+        'model': {
+            'name': 'sgmnet',
+            'net_channels': 128,
+            'model_dir': '/workspace/ICCV23/nerfstudio_ongoing/pnerfstudio/data/weights/sgmnet/weights/sgm/root',
+        },
+    },
+    'sgmnet_sp': {
+        'output': 'matches-sgmnet-sp',
+        'model': {
+            'name': 'sgmnet',
+            'net_channels': 256,
+            'model_dir': '/workspace/ICCV23/nerfstudio_ongoing/pnerfstudio/data/weights/sgmnet/weights/sgm/sp',
+        },
+    },
     'superglue-fast': {
         'output': 'matches-superglue-it5',
         'model': {

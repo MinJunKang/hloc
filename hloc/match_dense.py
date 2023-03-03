@@ -82,6 +82,71 @@ confs = {
         'max_error': 4,  # max error for assigned keypoints (in px)
         'cell_size': 4,  # size of quantization patch (max 1 kp/patch)
     },
+    # QuadTree Attention
+    'qtree': {
+        'output': 'matches-qtree',
+        'model': {
+            'name': 'quadtree',
+            'weights': 'outdoor'
+        },
+        'preprocessing': {
+            'grayscale': True,
+            'resize_max': 1024,
+            'dfactor': 32
+        },
+        'max_error': 1,  # max error for assigned keypoints (in px)
+        'cell_size': 1,  # size of quantization patch (max 1 kp/patch)
+    },
+    # Semi-scalable qtree which limits detected keypoints
+    'qtree_aachen': {
+        'output': 'matches-qtree_aachen',
+        'model': {
+            'name': 'quadtree',
+            'weights': 'outdoor'
+        },
+        'preprocessing': {
+            'grayscale': True,
+            'resize_max': 1024,
+            'dfactor': 32
+        },
+        'max_error': 2,  # max error for assigned keypoints (in px)
+        'cell_size': 8,  # size of quantization patch (max 1 kp/patch)
+    },
+    
+    # DKM model
+    'dkm_outdoor': {
+        'output': 'matches-dkm-outdoor',
+        'model': {
+            'name': 'dkm',
+            'weights': 'outdoor',
+            'mn_thresh': 0.25,  # px (within n pixel, it's inlier)
+        },
+        'preprocessing': {
+            'grayscale': False,
+            'resize_max': 1024,
+            'dfactor': 8
+        },
+        'max_error': 1,  # max error for assigned keypoints (in px)
+        'cell_size': 1,  # size of quantization patch (max 1 kp/patch)
+    },
+    'dkm_indoor': {
+        'output': 'matches-dkm-indoor',
+        'model': {
+            'name': 'dkm',
+            'weights': 'indoor',
+            'mn_thresh': 0.25,  # px (within n pixel, it's inlier)
+        },
+        'preprocessing': {
+            'grayscale': False,
+            'resize_max': 1024,
+            'dfactor': 8
+        },
+        'max_error': 1,  # max error for assigned keypoints (in px)
+        'cell_size': 1,  # size of quantization patch (max 1 kp/patch)
+    },
+    
+    # PDCNet+ model
+    
 }
 
 
