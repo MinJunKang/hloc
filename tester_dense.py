@@ -9,7 +9,7 @@ sfm_pairs = outputs / 'pairs-netvlad.txt'
 sfm_dir = outputs / 'sfm_dkm_outdoor'
 
 retrieval_conf = extract_features.confs['netvlad']
-matcher_conf = match_dense.confs['qtree']
+matcher_conf = match_dense.confs['dkm_outdoor']
 # use sift with sgmnet_root
 # use superpoint with sgmnet_sp
 

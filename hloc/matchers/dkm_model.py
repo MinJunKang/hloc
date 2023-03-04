@@ -113,6 +113,7 @@ class RegressionMatcher_DKM(nn.Module):
             return dense_corresps
 
     def forward_symmetric(self, batch):
+        # save (feat_q, feat_s), (feat_s, feat_q) as pairs
         feature_pyramid = self.extract_backbone_features(batch)
         f_q_pyramid = feature_pyramid
         f_s_pyramid = {
@@ -357,7 +358,7 @@ def DKMv3(weights, h, w, symmetric = True, sample_mode= "threshold_balanced", **
     return matcher
 
 
-def DKMv3_outdoor(path_to_weights = None):
+def DKMv3_outdoor(path_to_weights = None, symmetric=True):
     """
     Loads DKMv3 outdoor weights, uses internal resolution of (540, 720) by default
     resolution can be changed by setting model.h_resized, model.w_resized later.
@@ -368,10 +369,10 @@ def DKMv3_outdoor(path_to_weights = None):
         weights = torch.load(path_to_weights)
     else:
         weights = torch.hub.load_state_dict_from_url(weight_urls["outdoor"])
-    return DKMv3(weights, 540, 720, upsample_preds = True)
+    return DKMv3(weights, 540, 720, symmetric=symmetric, upsample_preds = True)
 
 
-def DKMv3_indoor(path_to_weights = None):
+def DKMv3_indoor(path_to_weights = None, symmetric=True):
     """
     Loads DKMv3 indoor weights, uses internal resolution of (480, 640) by default
     Resolution can be changed by setting model.h_resized, model.w_resized later.
@@ -380,4 +381,4 @@ def DKMv3_indoor(path_to_weights = None):
         weights = torch.load(path_to_weights)
     else:
         weights = torch.hub.load_state_dict_from_url(weight_urls["indoor"])
-    return DKMv3(weights, 480, 640, upsample_preds = False)
+    return DKMv3(weights, 480, 640, symmetric=symmetric, upsample_preds = False)
