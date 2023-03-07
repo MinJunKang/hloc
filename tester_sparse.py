@@ -9,8 +9,8 @@ sfm_pairs = outputs / 'pairs-netvlad.txt'
 sfm_dir = outputs / 'sfm_superpoint+sgmnet'
 
 retrieval_conf = extract_features.confs['netvlad']
-feature_conf = extract_features.confs['sift']
-matcher_conf = match_features.confs['sgmnet_root']
+feature_conf = extract_features.confs['r2d2']
+matcher_conf = match_features.confs['adalam']
 
 # feature_conf = extract_features.confs['superpoint_aachen']
 # matcher_conf = match_features.confs['superglue']

@@ -21,7 +21,7 @@ from .dkm_model import DKMv3_outdoor, DKMv3_indoor
 class DKM(BaseModel):
     default_conf = {
         'weights': 'outdoor',
-        'conf_thresh': 0.85,
+        'conf_thresh': 0.8,
         'mn_thresh': 0.5,  # px (within n pixel, it's inlier), only valid if symmetric is True
         'max_num_matches': None,
         'symmetric': True  # if True, use symmetric matching, this must be true for mutual neighbor check

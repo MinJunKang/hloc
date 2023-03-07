@@ -29,6 +29,14 @@ confs = {
             'sinkhorn_iterations': 50,
         },
     },
+    'superglue_indoor': {
+        'output': 'matches-superglue-indoor',
+        'model': {
+            'name': 'superglue',
+            'weights': 'indoor',
+            'sinkhorn_iterations': 50,
+        },
+    },
     'sgmnet_root': {
         'output': 'matches-sgmnet-root',
         'model': {
@@ -155,7 +163,8 @@ def main(conf: Dict,
          export_dir: Optional[Path] = None,
          matches: Optional[Path] = None,
          features_ref: Optional[Path] = None,
-         overwrite: bool = False) -> Path:
+         overwrite: bool = False,
+         device: str = None) -> Path:
 
     if isinstance(features, Path) or Path(features).exists():
         features_q = features
@@ -173,7 +182,7 @@ def main(conf: Dict,
 
     if features_ref is None:
         features_ref = features_q
-    match_from_paths(conf, pairs, matches, features_q, features_ref, overwrite)
+    match_from_paths(conf, pairs, matches, features_q, features_ref, overwrite, device)
 
     return matches
 
@@ -205,7 +214,8 @@ def match_from_paths(conf: Dict,
                      match_path: Path,
                      feature_path_q: Path,
                      feature_path_ref: Path,
-                     overwrite: bool = False) -> Path:
+                     overwrite: bool = False,
+                     device: str = None) -> Path:
     logger.info('Matching local features with configuration:'
                 f'\n{pprint.pformat(conf)}')
 
@@ -223,7 +233,8 @@ def match_from_paths(conf: Dict,
         logger.info('Skipping the matching.')
         return
 
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    if device is None:
+        device = 'cuda' if torch.cuda.is_available() else 'cpu'
     Model = dynamic_load(matchers, conf['model']['name'])
     model = Model(conf['model']).eval().to(device)
 

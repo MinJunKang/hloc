@@ -52,6 +52,20 @@ confs = {
         'max_error': 1,  # max error for assigned keypoints (in px)
         'cell_size': 1,  # size of quantization patch (max 1 kp/patch)
     },
+    'loftr_indoor': {
+        'output': 'matches-loftr-indoor',
+        'model': {
+            'name': 'loftr',
+            'weights': 'indoor'
+        },
+        'preprocessing': {
+            'grayscale': True,
+            'resize_max': 1024,
+            'dfactor': 8
+        },
+        'max_error': 1,  # max error for assigned keypoints (in px)
+        'cell_size': 1,  # size of quantization patch (max 1 kp/patch)
+    },
     # Semi-scalable loftr which limits detected keypoints
     'loftr_aachen': {
         'output': 'matches-loftr_aachen',
@@ -97,6 +111,20 @@ confs = {
         'max_error': 1,  # max error for assigned keypoints (in px)
         'cell_size': 1,  # size of quantization patch (max 1 kp/patch)
     },
+    'qtree_indoor': {
+        'output': 'matches-qtree-indoor',
+        'model': {
+            'name': 'quadtree',
+            'weights': 'indoor'
+        },
+        'preprocessing': {
+            'grayscale': True,
+            'resize_max': 1024,
+            'dfactor': 32
+        },
+        'max_error': 1,  # max error for assigned keypoints (in px)
+        'cell_size': 1,  # size of quantization patch (max 1 kp/patch)
+    },
     # Semi-scalable qtree which limits detected keypoints
     'qtree_aachen': {
         'output': 'matches-qtree_aachen',
@@ -119,7 +147,7 @@ confs = {
         'model': {
             'name': 'dkm',
             'weights': 'outdoor',
-            'mn_thresh': 0.25,  # px (within n pixel, it's inlier)
+            'mn_thresh': 1.0,  # px (within n pixel, it's inlier)
         },
         'preprocessing': {
             'grayscale': False,
@@ -134,7 +162,7 @@ confs = {
         'model': {
             'name': 'dkm',
             'weights': 'indoor',
-            'mn_thresh': 0.25,  # px (within n pixel, it's inlier)
+            'mn_thresh': 1.0,  # px (within n pixel, it's inlier)
         },
         'preprocessing': {
             'grayscale': False,
@@ -145,7 +173,7 @@ confs = {
         'cell_size': 1,  # size of quantization patch (max 1 kp/patch)
     },
     
-    # PDCNet+ model
+    # PDCNet+ model (Todo next)
     
 }
 
@@ -315,9 +343,11 @@ def match_dense(conf: Dict,
                 pairs: List[Tuple[str, str]],
                 image_dir: Path,
                 match_path: Path,  # out
-                existing_refs: Optional[List] = []):
+                existing_refs: Optional[List] = [],
+                device: str = None):
 
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    if device is None:
+        device = 'cuda' if torch.cuda.is_available() else 'cpu'
     Model = dynamic_load(matchers, conf['model']['name'])
     model = Model(conf['model']).eval().to(device)
 
@@ -534,7 +564,8 @@ def match_and_assign(conf: Dict,
                      feature_path_q: Path,  # out
                      feature_paths_refs: Optional[List[Path]] = [],
                      max_kps: Optional[int] = 8192,
-                     overwrite: bool = False) -> Path:
+                     overwrite: bool = False,
+                     device: str = None) -> Path:
     for path in feature_paths_refs:
         if not path.exists():
             raise FileNotFoundError(f'Reference feature file {path}.')
@@ -563,7 +594,7 @@ def match_and_assign(conf: Dict,
 
     # extract semi-dense matches
     match_dense(conf, pairs, image_dir, match_path,
-                existing_refs=existing_refs)
+                existing_refs=existing_refs, device=device)
 
     logger.info("Assigning matches...")
 
@@ -594,7 +625,8 @@ def main(conf: Dict,
          features: Optional[Path] = None,  # out
          features_ref: Optional[Path] = None,
          max_kps: Optional[int] = 8192,
-         overwrite: bool = False) -> Path:
+         overwrite: bool = False, 
+         device: str = None) -> Path:
     logger.info('Extracting semi-dense features with configuration:'
                 f'\n{pprint.pformat(conf)}')
 
@@ -627,7 +659,7 @@ def main(conf: Dict,
 
     match_and_assign(conf, pairs, image_dir, matches,
                      features_q, features_ref,
-                     max_kps, overwrite)
+                     max_kps, overwrite, device)
 
     return features_q, matches
 

@@ -67,7 +67,7 @@ def pairs_from_score_matrix(scores: torch.Tensor,
     return pairs
 
 
-def main(descriptors, output, num_matched,
+def main(descriptors, output, num_matched, output_ordered=None,
          query_prefix=None, query_list=None,
          db_prefix=None, db_list=None, db_model=None, db_descriptors=None):
     logger.info('Extracting image pairs from a retrieval database.')
@@ -101,10 +101,19 @@ def main(descriptors, output, num_matched,
     self = np.array(query_names)[:, None] == np.array(db_names)[None]
     pairs = pairs_from_score_matrix(sim, self, num_matched, min_score=0)
     pairs = [(query_names[i], db_names[j]) for i, j in pairs]
-
+    pairs = sorted(pairs, key=lambda x: x[1])  # add sort by db name
+    pairs = sorted(pairs, key=lambda x: x[0])  # add sort by query name
     logger.info(f'Found {len(pairs)} pairs.')
     with open(output, 'w') as f:
         f.write('\n'.join(' '.join([i, j]) for i, j in pairs))
+    if output_ordered is not None:  # horizontally aligned
+        with open(output_ordered, 'w') as f:
+            for idx, (i, j) in enumerate(pairs):
+                if idx % num_matched == 0: str_to_write = [i, j]
+                else: str_to_write.append(j)
+                if idx % num_matched == num_matched - 1: 
+                    f.write(' '.join(str_to_write))
+                    if idx != len(pairs) - 1: f.write('\n')
 
 
 if __name__ == "__main__":
@@ -112,6 +121,7 @@ if __name__ == "__main__":
     parser.add_argument('--descriptors', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--num_matched', type=int, required=True)
+    parser.add_argument('--output_ordered', type=Path, required=False)
     parser.add_argument('--query_prefix', type=str, nargs='+')
     parser.add_argument('--query_list', type=Path)
     parser.add_argument('--db_prefix', type=str, nargs='+')
