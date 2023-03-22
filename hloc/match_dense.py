@@ -154,8 +154,8 @@ confs = {
             'resize_max': 1024,
             'dfactor': 8
         },
-        'max_error': 1,  # max error for assigned keypoints (in px)
-        'cell_size': 1,  # size of quantization patch (max 1 kp/patch)
+        'max_error': 2,  # max error for assigned keypoints (in px)
+        'cell_size': 4,  # size of quantization patch (max 1 kp/patch)
     },
     'dkm_indoor': {
         'output': 'matches-dkm-indoor',
